@@ -2,14 +2,15 @@ const querystring = require('querystring')
 const http = require('http')
 
 class AccountWrapper {
-    generateRequestOptions (path, method) {
+    generateRequestOptions (path, method, contentLength) {
         var options = {
             hostname: 'x',
             port: x,
             path: path,
             method: method,
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': contentLength
             }
         }
 
@@ -58,7 +59,7 @@ class AccountWrapper {
                 'password': password
             })
 
-            var options = this.generateRequestOptions('/account/signup', 'POST')
+            var options = this.generateRequestOptions('/account/signup', 'POST', Buffer.byteLength(postData))
 
             this.makeRequest(options, postData)
                 .then((data) => resolve(data))
@@ -81,7 +82,7 @@ class AccountWrapper {
                 'password': password
             })
 
-            var options = this.generateRequestOptions('/account/login', 'POST')
+            var options = this.generateRequestOptions('/account/login', 'POST', Buffer.byteLength(postData))
 
             this.makeRequest(options, postData)
                 .then((data) => resolve(data))
@@ -109,7 +110,7 @@ class AccountWrapper {
                 'new_password': new_password
             })
 
-            var options = this.generateRequestOptions('/account/update', 'PUT')
+            var options = this.generateRequestOptions('/account/update', 'PUT', Buffer.byteLength(putData))
 
             this.makeRequest(options, putData)
                 .then((data) => resolve(data))
@@ -134,7 +135,7 @@ class AccountWrapper {
                 'password': password
             })
 
-            var options = this.generateRequestOptions('/account/delete', 'DELETE')
+            var options = this.generateRequestOptions('/account/delete', 'DELETE', Buffer.byteLength(deleteData))
 
             this.makeRequest(options, deleteData)
                 .then((data) => resolve(data))
