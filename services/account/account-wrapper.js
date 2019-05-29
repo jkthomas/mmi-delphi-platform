@@ -1,5 +1,6 @@
 const querystring = require('querystring')
 const http = require('http')
+let jwt = require('jsonwebtoken')
 
 class AccountWrapper {
     generateRequestOptions (path, method, contentLength) {
@@ -84,8 +85,18 @@ class AccountWrapper {
 
             var options = this.generateRequestOptions('/account/login', 'POST', Buffer.byteLength(postData))
 
+            let token = jwt.sign({ username: username },
+                'testToken',
+                { expiresIn: '24h' // expires in 24 hours
+                }
+            )
+
             this.makeRequest(options, postData)
-                .then((data) => resolve(data))
+                .then((data) => resolve({
+                    success: true,
+                    message: data,
+                    token: token
+                }))
                 .catch((error) => reject(error))
         })
     }
@@ -119,7 +130,6 @@ class AccountWrapper {
     }
     /* eslint-enable camelcase */
 
-    // TODO: Request body seems to be empty on request only for this method - ignored?
     deleteAccount (externalRequest) {
         return new Promise((resolve, reject) => {
             const { username, password } = externalRequest.body
