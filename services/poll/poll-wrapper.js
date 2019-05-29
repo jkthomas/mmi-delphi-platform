@@ -1,6 +1,7 @@
 // const querystring = require('querystring')
 // const http = require('http')
 let jwt = require('jsonwebtoken')
+let secret = require('../../utilities/connection/secrets').secret
 
 class PollWrapper {
     generateRequestOptions (path, method, contentLength) {
@@ -23,6 +24,7 @@ class PollWrapper {
     }
 
     // TODO: Temporary method for JWT usage - until implementing poll service module
+    // TODO: Manage lack of user after user deletion
     getValues (externalRequest) {
         return new Promise((resolve, reject) => {
             let token = externalRequest.headers['x-access-token'] || externalRequest.headers['authorization']
@@ -30,7 +32,7 @@ class PollWrapper {
                 reject(new Error('Token was not specified'))
             }
 
-            jwt.verify(token, 'testToken', (err, decoded) => {
+            jwt.verify(token, secret, (err, decoded) => {
                 if (err) {
                     reject(new Error('Token verify error'))
                 } else {

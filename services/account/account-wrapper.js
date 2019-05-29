@@ -1,6 +1,7 @@
 const querystring = require('querystring')
 const http = require('http')
 let jwt = require('jsonwebtoken')
+let secret = require('../../utilities/connection/secrets').secret
 
 class AccountWrapper {
     generateRequestOptions (path, method, contentLength) {
@@ -28,7 +29,7 @@ class AccountWrapper {
                     console.log('Received data:', responseData.toString('utf8'))
                     var jsonResponseData = JSON.parse(responseData.toString('utf8'))
                     if (res.statusCode === 200) {
-                        resolve(jsonResponseData.message)
+                        resolve(jsonResponseData)
                     } else {
                         reject(new Error(jsonResponseData.message))
                     }
@@ -85,21 +86,23 @@ class AccountWrapper {
 
             var options = this.generateRequestOptions('/account/login', 'POST', Buffer.byteLength(postData))
 
-            let token = jwt.sign({ username: username },
-                'testToken',
-                { expiresIn: '24h' // expires in 24 hours
+            let token = jwt.sign({ username: username }, secret,
+                {
+                    expiresIn: '24h' // expires in 24 hours
                 }
             )
 
             this.makeRequest(options, postData)
                 .then((data) => resolve({
                     success: true,
-                    message: data,
+                    message: data.message,
                     token: token
                 }))
                 .catch((error) => reject(error))
         })
     }
+
+    // TODO: Add additional JWT token to all user operations
 
     /* eslint-disable camelcase */
     updateAccount (externalRequest) {
