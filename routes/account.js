@@ -19,8 +19,8 @@ router.put('/update', function (req, res) {
 })
 
 /* DELETE delete account. */
-router.delete('/delete', function (req, res) {
-    AccountController.deleteAccount(req, res)
-})
+// router.delete('/delete', function (req, res) {
+//     AccountController.deleteAccount(req, res)
+// })
 
 module.exports = router

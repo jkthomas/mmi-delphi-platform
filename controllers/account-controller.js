@@ -1,9 +1,9 @@
-const account = require('../services/account/account-wrapper')
-var accountWrapper = new account.AccountWrapper()
+const account = require('../services/account/account-service')
+var accountService = new account.AccountService()
 
 class AccountController {
     createAccount (request, response) {
-        accountWrapper.createAccount(request)
+        accountService.createAccount(request)
             .then((jsonData) => {
                 response.status(200).send(jsonData)
             })
@@ -11,7 +11,7 @@ class AccountController {
     }
 
     loginAccount (request, response) {
-        accountWrapper.loginAccount(request)
+        accountService.loginAccount(request)
             .then((jsonData) => {
                 response.status(200).send(jsonData)
             })
@@ -19,7 +19,7 @@ class AccountController {
     }
 
     updateAccount (request, response) {
-        accountWrapper.updateAccount(request)
+        accountService.updateAccount(request)
             .then((jsonData) => {
                 response.status(200).send(jsonData)
             })
@@ -27,7 +27,7 @@ class AccountController {
     }
 
     deleteAccount (request, response) {
-        accountWrapper.deleteAccount(request)
+        accountService.deleteAccount(request)
             .then((jsonData) => {
                 response.status(200).send(jsonData)
             })

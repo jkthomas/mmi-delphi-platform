@@ -3,7 +3,7 @@
 let jwt = require('jsonwebtoken')
 let secret = require('../../utilities/connection/secrets').secret
 
-class PollWrapper {
+class PollService {
     generateRequestOptions (path, method, contentLength) {
         var options = {
             hostname: 'X',
@@ -20,11 +20,10 @@ class PollWrapper {
     }
 
     makeRequest (options, data) {
-        // TODO: To be implemented after adding poll service module
+        // To be implemented after adding poll service module
     }
 
-    // TODO: Temporary method for JWT usage - until implementing poll service module
-    // TODO: Manage lack of user after user deletion
+    // Temporary method for JWT usage - until implementing poll service module
     getValues (externalRequest) {
         return new Promise((resolve, reject) => {
             let token = externalRequest.headers['x-access-token'] || externalRequest.headers['authorization']
@@ -48,5 +47,5 @@ class PollWrapper {
 }
 
 module.exports = {
-    PollWrapper
+    PollService
 }

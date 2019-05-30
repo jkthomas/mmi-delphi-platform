@@ -1,9 +1,9 @@
-const poll = require('../services/poll/poll-wrapper')
-var pollWrapper = new poll.PollWrapper()
+const poll = require('../services/poll/poll-service')
+var pollService = new poll.PollService()
 
 class PollController {
     getValues (request, response) {
-        pollWrapper.getValues(request)
+        pollService.getValues(request)
             .then((jsonData) => {
                 response.json(jsonData)
             })

@@ -3,7 +3,7 @@ const http = require('http')
 let jwt = require('jsonwebtoken')
 let secret = require('../../utilities/connection/secrets').secret
 
-class AccountWrapper {
+class AccountService {
     generateRequestOptions (path, method, contentLength) {
         var options = {
             hostname: 'x',
@@ -107,6 +107,10 @@ class AccountWrapper {
     /* eslint-disable camelcase */
     updateAccount (externalRequest) {
         return new Promise((resolve, reject) => {
+            let token = externalRequest.headers['x-access-token'] || externalRequest.headers['authorization']
+            if (token === undefined || token === null) {
+                reject(new Error('Token was not specified'))
+            }
             const { username, password, new_password } = externalRequest.body
             if (username === undefined || username === null) {
                 reject(new Error('Username was not specified'))
@@ -118,21 +122,28 @@ class AccountWrapper {
                 reject(new Error('New password was not specified'))
             }
 
-            var putData = querystring.stringify({
-                'username': username,
-                'password': password,
-                'new_password': new_password
+            jwt.verify(token, secret, (err, decoded) => {
+                if (err) {
+                    reject(new Error('Token verify error'))
+                } else {
+                    var putData = querystring.stringify({
+                        'username': username,
+                        'password': password,
+                        'new_password': new_password
+                    })
+
+                    var options = this.generateRequestOptions('/account/update', 'PUT', Buffer.byteLength(putData))
+
+                    this.makeRequest(options, putData)
+                        .then((data) => resolve(data))
+                        .catch((error) => reject(error))
+                }
             })
-
-            var options = this.generateRequestOptions('/account/update', 'PUT', Buffer.byteLength(putData))
-
-            this.makeRequest(options, putData)
-                .then((data) => resolve(data))
-                .catch((error) => reject(error))
         })
     }
     /* eslint-enable camelcase */
 
+    // TODO: Consider user deleting allowance - currently unused
     deleteAccount (externalRequest) {
         return new Promise((resolve, reject) => {
             const { username, password } = externalRequest.body
@@ -158,5 +169,5 @@ class AccountWrapper {
 }
 
 module.exports = {
-    AccountWrapper
+    AccountService
 }
