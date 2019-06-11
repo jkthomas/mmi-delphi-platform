@@ -6,8 +6,8 @@ let secret = require('../../utilities/connection/secrets').secret
 class AccountService {
     generateRequestOptions (path, method, contentLength) {
         var options = {
-            hostname: 'x',
-            port: x,
+            hostname: 'localhost',
+            port: 4050,
             path: path,
             method: method,
             headers: {
@@ -28,7 +28,7 @@ class AccountService {
                 res.on('data', (responseData) => {
                     console.log('Received data:', responseData.toString('utf8'))
                     var jsonResponseData = JSON.parse(responseData.toString('utf8'))
-                    if (res.statusCode === 200) {
+                    if (res.statusCode === 200 || res.statusCode === 201) {
                         resolve(jsonResponseData)
                     } else {
                         reject(new Error(jsonResponseData.message))
